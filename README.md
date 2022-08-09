@@ -1,1 +1,1 @@
-# nix-darwin
+# My nix-darwin config
