@@ -3,8 +3,6 @@
 {
   home.stateVersion = "22.05";
   xdg.enable = true;
-  xdg.configFile."nvim/lua/base.lua".source = ./base.lua;
-
 
   home.sessionVariables = {
     LANG = "en_US.UTF-8";
@@ -109,8 +107,6 @@
         };
       }
     ];
-
-
   };
 
   programs.exa.enable = true;
@@ -164,6 +160,7 @@
 
     pkgs.fishPlugins.foreign-env
     pkgs.fishPlugins.done
+    pkgs.awscli2
   ];
 
   # Misc configuration files --------------------------------------------------------------------{{{
@@ -186,7 +183,7 @@
     extraConfig = builtins.readFile ./kitty;
   };
 
-  # home.file."/Users/chandy/.config/test.lua".source = ./base.lua;
+  xdg.configFile."nvim/lua/base.lua".source = ./base.lua;
   programs.neovim = {
     enable = true;
     package = pkgs.neovim-unwrapped;
@@ -240,6 +237,63 @@ lua require('base')
       nixfmt
       rustfmt
     ];    
+  };
+
+  programs.git = {
+    enable = true;
+    userName = "Chris Handy";
+    userEmail = "chrisjhandy@gmail.com";
+    aliases = {
+      prettylog = "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(r) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative";
+      root = "rev-parse --show-toplevel";
+      # View abbreviated SHA, description, and history graph of the latest 20 commits
+      l = "log --pretty=oneline -n 20 --graph --abbrev-commit";
+      # View the current working tree status using the short formats
+      s = "status -s";
+      # Show the diff between the latest commit and the current state
+      d = "!git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat";
+      # `git di $number` shows the diff between the state `$number` revisions ago and the current state
+      di = "!d() { git diff --patch-with-stat HEAD~$1; }; git diff-index --quiet HEAD -- || clear; d";
+      # Using diff-so-fancy
+      dsf = "!git diff --color $@ | diff-so-fancy";
+      # Pull in remote changes for the current repository and all its submodules
+      p = "!git pull; git submodule foreach git pull origin master";
+      # Clone a repository including all submodules
+      c = "clone --recursive";
+      # Commit all changes
+      ca = "!git add -A && git commit -av";
+      # Switch to a branch, creating it if necessary
+      go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f";
+      # Show verbose output about tags, branches or remote
+      tags = "tag -l";
+      branches = "branch -a";
+      remotes = "remote -v";
+      # Amend the currently staged files to the latest commit
+      amend = "commit --amend --reuse-message=HEAD";
+      # Credit an author on the latest commit
+      credit = "!f() { git commit --amend --author \"$1 <$2>\" -C HEAD; }; f";
+      # Interactive rebase with the given number of latest commits
+      reb = "!r() { git rebase -i HEAD~$1; }; r";
+      # Remove the old tag with this name and tag the latest commit with it.
+      retag = "!r() { git tag -d $1 && git push origin :refs/tags/$1 && git tag $1; }; r";
+      # Find branches containing commit
+      fb = "!f() { git branch -a --contains $1; }; f";
+      # Find tags containing commit
+      ft = "!f() { git describe --always --contains $1; }; f";
+      # Find commits by source code
+      fc = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short -S$1; }; f";
+      # Find commits by commit message
+      fm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f";
+    };
+    extraConfig = {
+      branch.autosetuprebase = "always";
+      color.ui = true;
+      core.askPass = ""; # needs to be empty to use terminal for ask pass
+      credential.helper = "store"; # want to make this more secure
+      github.user = "chandy";
+      push.default = "tracking";
+      init.defaultBranch = "main";
+    };
   };
 
   # Apps
