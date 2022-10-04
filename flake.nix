@@ -140,16 +140,16 @@
         in
 
         {
-          options = {
-            security.pam.enableSudoTouchIdAuth = mkEnableOption ''
-              Enable sudo authentication with Touch ID
-              When enabled, this option adds the following line to /etc/pam.d/sudo:
-                  auth       sufficient     pam_tid.so
-              (Note that macOS resets this file when doing a system update. As such, sudo
-              authentication with Touch ID won't work after a system update until the nix-darwin
-              configuration is reapplied.)
-            '';
-          };
+          # options = {
+          #   security.pam.enableSudoTouchIdAuth = mkEnableOption ''
+          #     Enable sudo authentication with Touch ID
+          #     When enabled, this option adds the following line to /etc/pam.d/sudo:
+          #         auth       sufficient     pam_tid.so
+          #     (Note that macOS resets this file when doing a system update. As such, sudo
+          #     authentication with Touch ID won't work after a system update until the nix-darwin
+          #     configuration is reapplied.)
+          #   '';
+          # };
 
           config = {
             system.activationScripts.extraActivation.text = ''

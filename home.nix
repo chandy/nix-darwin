@@ -198,7 +198,7 @@
       vimPlugins.telescope-nvim
       vimPlugins.telescope-fzf-native-nvim
       vimPlugins.telescope-file-browser-nvim
-      vimPlugins.nvim-treesitter
+      (vimPlugins.nvim-treesitter.withPlugins (_: pkgs.tree-sitter.allGrammars))
       vimPlugins.nvim-treesitter-textobjects
       vimPlugins.nvim-treesitter-refactor
       vimPlugins.nvim-treesitter-context

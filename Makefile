@@ -23,7 +23,7 @@ build:
 	TERM=xterm-256color nix build .#darwinConfigurations.aarch64-darwin.system
 
 switch:
-	TERM=xterm-256color ./result/sw/bin/darwin-rebuild switch --flake .#aarch64-darwin
+	TERM=xterm-256color ./result/sw/bin/darwin-rebuild switch --flake .#aarch64-darwin --fallback
 
 test:
 	NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 nixos-rebuild test --flake ".#$(NIXNAME)" --use-remote-sudo
