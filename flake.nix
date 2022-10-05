@@ -41,10 +41,9 @@
   {
     # My `nix-darwin` configs
       
-    darwinConfigurations = rec {
-      aarch64-darwin = darwinSystem {
+      darwinConfigurations."mac-aarch64" = darwinSystem {
         system = "aarch64-darwin";
-        modules = attrValues self.darwinModules ++ [ 
+        modules = attrValues self.darwinModules ++ [
           # Main `nix-darwin` config
           ./configuration.nix
           # `home-manager` module
@@ -54,11 +53,29 @@
             # `home-manager` config
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.chandy = import ./home.nix;            
+            home-manager.users.chandy = import ./home.nix;
           }
         ];
+
       };
-    };
+
+      darwinConfigurations."mac-x86_64" = darwinSystem {
+        system = "x86_64-darwin";
+        modules = attrValues self.darwinModules ++ [
+          # Main `nix-darwin` config
+          ./configuration.nix
+          # `home-manager` module
+          home-manager.darwinModules.home-manager
+          {
+            nixpkgs = nixpkgsConfig;
+            # `home-manager` config
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.chandy = import ./home.nix;
+          }
+        ];
+
+      };
 
     # Overlays --------------------------------------------------------------- {{{
 

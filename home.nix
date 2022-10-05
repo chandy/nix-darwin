@@ -4,20 +4,20 @@
   home.stateVersion = "22.05";
   xdg.enable = true;
 
-  home.sessionVariables = {
-    LANG = "en_US.UTF-8";
-    LC_CTYPE = "en_US.UTF-8";
-    LC_ALL = "en_US.UTF-8";
-    EDITOR = "nvim";
-    PAGER = "less -FirSwX";
-    MANPAGER = "sh -c 'col -bx | ${pkgs.bat}/bin/bat -l man -p'";
-  };
+  #   home.sessionVariables = {
+  #     LANG = "en_US.UTF-8";
+  #     LC_CTYPE = "en_US.UTF-8";
+  #     LC_ALL = "en_US.UTF-8";
+  #     EDITOR = "nvim";
+  #     PAGER = "less -FirSwX";
+  #     MANPAGER = "sh -c 'col -bx | ${pkgs.bat}/bin/bat -l man -p'";
+  #   };
 
-  # https://github.com/malob/nixpkgs/blob/master/home/default.nix
+  #   # https://github.com/malob/nixpkgs/blob/master/home/default.nix
 
-  # Direnv, load and unload environment variables depending on the current directory.
-  # https://direnv.net
-  # https://rycee.gitlab.io/home-manager/options.html#opt-programs.direnv.enable
+  #   # Direnv, load and unload environment variables depending on the current directory.
+  #   # https://direnv.net
+  #   # https://rycee.gitlab.io/home-manager/options.html#opt-programs.direnv.enable
   programs.direnv.enable = true;
   programs.direnv.nix-direnv.enable = true;
 
@@ -52,7 +52,7 @@
     memory_usage.disabled = true; # because it includes cached memory it's reported as full a lot
     username.style_user = "bold blue"; # don't like the default
   };
-  
+
   programs.fish = {
     enable = true;
     interactiveShellInit = lib.strings.concatStrings (lib.strings.intersperse "\n" [
@@ -64,8 +64,8 @@
       # set -gx fish_user_paths $HOME/go/bin $HOME/.cargo/bin                           
       # "set -g theme_nerd_fonts yes"                                                       
       # "set -g theme_newline_cursor yes"                                                   
-      "set -gx FZF_DEFAULT_COMMAND 'fd --type file'"                                     
-      "set -gx FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND"                                 
+      "set -gx FZF_DEFAULT_COMMAND 'fd --type file'"
+      "set -gx FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND"
       "set -gx FZF_ALT_C_COMMAND fd -t d . $HOME"
       "set fzf_preview_dir_cmd exa --all --color=always"
       "set -gx EDITOR nvim"
@@ -128,7 +128,7 @@
     pkgs.gopls
 
     pkgs.tetex
-    
+
     pkgs.delta
     pkgs.du-dust
     pkgs.duf
@@ -139,7 +139,7 @@
     pkgs.glances
     pkgs.gtop
     pkgs.gping
-    pkgs.procs
+    # pkgs.procs
     pkgs.dogdns
     # pkgs.neofetch
     pkgs.nmap
@@ -151,7 +151,7 @@
     pkgs.luajitPackages.gitsigns-nvim
     pkgs.statix
     pkgs.nodejs
-    pkgs.nerdfonts
+    # pkgs.nerdfonts
     pkgs.diff-so-fancy
     pkgs.nodePackages.yarn
     pkgs.nodePackages.eslint
@@ -161,6 +161,7 @@
     pkgs.fishPlugins.foreign-env
     pkgs.fishPlugins.done
     pkgs.awscli2
+    # pkgs.nodePackages_latest.aws-cdk
   ];
 
   # Misc configuration files --------------------------------------------------------------------{{{
@@ -199,6 +200,7 @@
       vimPlugins.telescope-fzf-native-nvim
       vimPlugins.telescope-file-browser-nvim
       (vimPlugins.nvim-treesitter.withPlugins (_: pkgs.tree-sitter.allGrammars))
+      # vimPlugins.nvim-treesitter
       vimPlugins.nvim-treesitter-textobjects
       vimPlugins.nvim-treesitter-refactor
       vimPlugins.nvim-treesitter-context
@@ -221,11 +223,12 @@
       vimPlugins.nvim-web-devicons
       vimPlugins.vim-startify
       vimPlugins.neoformat
+      vimPlugins.catppuccin-nvim
     ];
 
     # extraConfig = (import ./vim-config.nix) { inherit sources; };
     extraConfig = ''
-lua require('base')
+      lua require('base')
     '';
 
     extraPackages = with pkgs; [
@@ -236,7 +239,7 @@ lua require('base')
       stylua
       nixfmt
       rustfmt
-    ];    
+    ];
   };
 
   programs.git = {
@@ -300,13 +303,15 @@ lua require('base')
   # `home-manager` currently has issues adding them to `~/Applications`
   # Issue: https://github.com/nix-community/home-manager/issues/1341
   home.activation = lib.mkIf pkgs.stdenv.isDarwin {
-      copyApplications = let
+    copyApplications =
+      let
         apps = pkgs.buildEnv {
           name = "home-manager-applications";
           paths = config.home.packages;
           pathsToLink = "/Applications";
         };
-      in lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      in
+      lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         baseDir="$HOME/Applications/Home Manager Apps"
         if [ -d "$baseDir" ]; then
           rm -rf "$baseDir"

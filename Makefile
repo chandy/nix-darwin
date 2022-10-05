@@ -12,7 +12,7 @@ NIXBLOCKDEVICE ?= sda
 MAKEFILE_DIR := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 
 # The name of the nixosConfiguration in the flake
-NIXNAME ?= vm-aarch64
+NIXNAME ?= mac-aarch64
 
 # SSH options that are used. These aren't meant to be overridden but are
 # reused a lot so we just store them up here.
@@ -20,10 +20,10 @@ SSH_OPTIONS=-o PubkeyAuthentication=no -o UserKnownHostsFile=/dev/null -o Strict
 
 # Having to ad the TERM var until https://github.com/nix-community/home-manager/issues/423 is resolved
 build:
-	TERM=xterm-256color nix build .#darwinConfigurations.aarch64-darwin.system
+	TERM=xterm-256color nix build .#darwinConfigurations.$(NIXNAME).system
 
 switch:
-	TERM=xterm-256color ./result/sw/bin/darwin-rebuild switch --flake .#aarch64-darwin --fallback
+	TERM=xterm-256color ./result/sw/bin/darwin-rebuild switch --flake ".#$(NIXNAME)" --fallback
 
 test:
 	NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 nixos-rebuild test --flake ".#$(NIXNAME)" --use-remote-sudo

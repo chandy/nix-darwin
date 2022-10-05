@@ -214,7 +214,6 @@ local on_attach = function(client, bufnr)
     vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
     vim.keymap.set('n', '<space>f', vim.lsp.buf.formatting, bufopts)
 end
-  
 local lsp_flags = {
     -- This is the default in Nvim 0.7+
     debounce_text_changes = 150,
@@ -304,12 +303,21 @@ require("lualine").setup({
         theme = "kanagawa",
     },
 })
-require("kanagawa").setup({
-    overrides = {},
+
+vim.g.catppuccin_flavour = "frappe"
+--vim.g.catppuccin_flavour = "mocha"
+require("catppuccin").setup({
 })
 
 -- setup must be called before loading
-vim.cmd("colorscheme kanagawa")
+vim.cmd("colorscheme catppuccin")
+
+--require("kanagawa").setup({
+--    overrides = {},
+--})
+
+-- setup must be called before loading
+--vim.cmd("colorscheme kanagawa")
 
 -- Mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
