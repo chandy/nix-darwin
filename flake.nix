@@ -4,24 +4,21 @@
   inputs = {
     # Package sets
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-22.05-darwin";
-    nixpkgs-unstable.url = github:NixOS/nixpkgs/nixpkgs-unstable;
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     # Environment/system management
     darwin.url = "github:lnl7/nix-darwin/master";
     darwin.inputs.nixpkgs.follows = "nixpkgs-unstable";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs-unstable";
-
-    # Other sources
-    comma = { url = github:Shopify/comma; flake = false; };
-    
   };
 
   outputs = { self, darwin, nixpkgs, home-manager, ... }@inputs:
   let 
 
     inherit (darwin.lib) darwinSystem;
-    inherit (inputs.nixpkgs-unstable.lib) attrValues makeOverridable optionalAttrs singleton;
+    inherit (inputs.nixpkgs-unstable.lib) 
+      attrValues makeOverridable optionalAttrs singleton;
 
     # Configuration for `nixpkgs`
     nixpkgsConfig = {
@@ -81,12 +78,13 @@
 
     overlays = {
       # Overlays to add various packages into package set
-        comma = final: prev: {
-          comma = import inputs.comma { inherit (prev) pkgs; };
-        };  
+        # comma = final: prev: {
+        #   comma = import inputs.comma { inherit (prev) pkgs; };
+        # };  
 
       # Overlay useful on Macs with Apple Silicon
-        apple-silicon = final: prev: optionalAttrs (prev.stdenv.system == "aarch64-darwin") {
+        apple-silicon = final: prev: 
+          optionalAttrs (prev.stdenv.system == "aarch64-darwin") {
           # Add access to x86 packages system is running Apple Silicon
           pkgs-x86 = import inputs.nixpkgs-unstable {
             system = "x86_64-darwin";
@@ -137,9 +135,10 @@
           # should be deleted when the option is disabled.
           mkSudoTouchIdAuthScript = isEnabled:
           let
-            file   = "/etc/pam.d/sudo";
+            file = "/etc/pam.d/sudo";
             option = "security.pam.enableSudoTouchIdAuth";
-          in ''
+          in
+          ''
             ${if isEnabled then ''
               # Enable sudo Touch ID authentication, if not already enabled
               if ! grep 'pam_tid.so' ${file} > /dev/null; then
@@ -154,8 +153,8 @@
               fi
             ''}
           '';
-        in
 
+        in
         {
           # options = {
           #   security.pam.enableSudoTouchIdAuth = mkEnableOption ''

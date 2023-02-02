@@ -156,6 +156,7 @@
     pkgs.nodePackages.yarn
     pkgs.nodePackages.eslint
     pkgs.nodePackages.prettier
+    pkgs.nodePackages.pnpm
     pkgs.tree-sitter
 
     pkgs.fishPlugins.foreign-env
@@ -302,27 +303,31 @@
   # Apps
   # `home-manager` currently has issues adding them to `~/Applications`
   # Issue: https://github.com/nix-community/home-manager/issues/1341
-  home.activation = lib.mkIf pkgs.stdenv.isDarwin {
-    copyApplications =
-      let
-        apps = pkgs.buildEnv {
-          name = "home-manager-applications";
-          paths = config.home.packages;
-          pathsToLink = "/Applications";
-        };
-      in
-      lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        baseDir="$HOME/Applications/Home Manager Apps"
-        if [ -d "$baseDir" ]; then
-          rm -rf "$baseDir"
-        fi
-        mkdir -p "$baseDir"
-        for appFile in ${apps}/Applications/*; do
-          target="$baseDir/$(basename "$appFile")"
-          $DRY_RUN_CMD cp ''${VERBOSE_ARG:+-v} -fHRL "$appFile" "$baseDir"
-          $DRY_RUN_CMD chmod ''${VERBOSE_ARG:+-v} -R +w "$target"
-        done
-      '';
-  };
+  # home.activation = lib.mkIf pkgs.stdenv.isDarwin {
+  #   copyApplications =
+  #     let
+  #       apps = pkgs.buildEnv {
+  #         name = "home-manager-applications";
+  #         paths = config.home.packages;
+  #         pathsToLink = "/Applications";
+  #       };
+  #     in
+  #     lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+  #       baseDir="$HOME/Applications/Home Manager Apps"
+  #       echo "hm 1"
+  #       if [ -d "$baseDir" ]; then
+  #         echo "hm rm 1"
+  #         rm -rf "$baseDir"
+  #       fi
+  #       echo "hm 2"
+  #       mkdir -p "$baseDir"
+  #       echo "hm 3"
+  #       for appFile in ${apps}/Applications/*; do
+  #         target="$baseDir/$(basename "$appFile")"
+  #         $DRY_RUN_CMD cp ''${VERBOSE_ARG:+-v} -fHRL "$appFile" "$baseDir"
+  #         $DRY_RUN_CMD chmod ''${VERBOSE_ARG:+-v} -R +w "$target"
+  #       done
+  #     '';
+  # };
 
 }
