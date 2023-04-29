@@ -42,6 +42,7 @@
   environment.systemPackages = with pkgs; [
     hello
     cowsay
+    python311
   ];
 
   # https://github.com/nix-community/home-manager/issues/423
