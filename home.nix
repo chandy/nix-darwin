@@ -67,10 +67,10 @@
       "set -gx FZF_DEFAULT_COMMAND 'fd --type file'"
       "set -gx FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND"
       "set -gx FZF_ALT_C_COMMAND fd -t d . $HOME"
-      "set fzf_preview_dir_cmd exa --all --color=always"
+      "set fzf_preview_dir_cmd eza --all --color=always"
       "set -gx EDITOR nvim"
       # To deal with fish not ordering the nix paths first https://github.com/LnL7/nix-darwin/issues/122
-      "fish_add_path --move --prepend --path $HOME/.nix-profile/bin /run/wrappers/bin /etc/profiles/per-user/$USER/bin /nix/var/nix/profiles/default/bin /run/current-system/sw/bin"
+      "fish_add_path --move --prepend --path $HOME/.nix-profile/bin /run/wrappers/bin /etc/profiles/per-user/$USER/bin /nix/var/nix/profiles/default/bin /run/current-system/sw/bin $HOME/.bun/bin"
       "fzf_configure_bindings"
     ]);
 
@@ -91,10 +91,12 @@
       pbpaste = "xclip -o";
 
       wo = "cd ~/Developer/workspace";
-      ll = "exa -l -g --icons";
-      la = "${pkgs.exa}/bin/exa -a";
-      lt = "${pkgs.exa}/bin/exa --tree";
-      lla = "${pkgs.exa}/bin/exa -la";
+      ll = "eza -l -g --icons";
+      la = "${pkgs.eza}/bin/eza -a";
+      lt = "${pkgs.eza}/bin/eza --tree";
+      lla = "${pkgs.eza}/bin/eza -la";
+
+      pn = "pnpm ";
     };
     plugins = [
       {
@@ -109,7 +111,7 @@
     ];
   };
 
-  programs.exa.enable = true;
+  programs.eza.enable = true;
   programs.jq.enable = true;
   programs.lsd.enable = true;
   programs.feh.enable = true;
@@ -162,6 +164,7 @@
     pkgs.fishPlugins.foreign-env
     pkgs.fishPlugins.done
     pkgs.awscli2
+    pkgs.aws-vault
     # pkgs.nodePackages_latest.aws-cdk
   ];
 
